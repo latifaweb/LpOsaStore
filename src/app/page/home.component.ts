@@ -31,11 +31,11 @@ import { Component } from '@angular/core';
   <!-- Produk -->
   <section class="container py-8 px-6">
     <h2 class="text-center font-semibold text-xl mb-4">SAYA SUKA TREND</h2>
-    <div class="flex justify-center space-x-4 mb-6">
-      <button class="px-4 py-2 bg-black text-white">FEATURED</button>
-      <button class="px-4 py-2 border">BEST SELLER</button>
-      <button class="px-4 py-2 border">NEW</button>
-      <button class="px-4 py-2 border">REKOMENDASI</button>
+    <div class="flex justify-center space-x-4 mb-6 px-4 md:px-2">
+      <button class="px-4 py-2 bg-black text-white rounded-xl">FEATURED</button>
+      <button class="px-4 py-2 border rounded-xl">BEST SELLER</button>
+      <button class="px-4 py-2 border rounded-xl">NEW</button>
+      <button class="px-4 py-2 border rounded-xl">REKOMENDASI</button>
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
