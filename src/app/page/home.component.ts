@@ -34,7 +34,7 @@ interface Product {
   <!-- src/app/pages/osa-store/osa-store.component.html -->
 <div class="flex flex-col items-center">
   <!-- Navbar -->
-  <nav class="sticky top-0 z-10 w-full text-black flex flex-col justify-center items-center">
+  <nav class="sticky top-0 z-20 w-full text-black flex flex-col justify-center items-center">
     <div class="w-full bg-black h-5"></div>
     <div class="flex justify-center pt-2 pb-1 bg-white w-full">
     <div class="text-2xl font-bold font-sans pr-2">OSA</div>
@@ -96,15 +96,17 @@ interface Product {
         </div>
         <div class="p-2 mb-2 flex-grow cursor-pointer" (click)="openProductDetail(product)">
           <h2 class="text-sm font-semibold text-wrap line-clamp-2">{{ product.namaBarang }}</h2>
-          <h2 class="text-sm text-wrap line-clamp-2">{{ product.deskripsi }}</h2>
-          <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
-    <span 
+       <div class="flex flex-row items-center">
+       <h2 class="text-md font-bold"> {{product?.bintang+"/5 "}}</h2>
+      <span 
       class="text-yellow-400 text-xl"
-      [class.text-gray-300]="i + 1 > +product.bintang"
+      [class.text-gray-300]=""
     >
       ★
     </span>
-  </ng-container>
+       </div>
+          <h2 class="text-sm text-wrap line-clamp-2">{{ product.deskripsi }}</h2>
+         
         </div>
         <div class="grid grid-cols-3 gap-2">
         <a [href]="product.urlTiktok" target="_blank" 

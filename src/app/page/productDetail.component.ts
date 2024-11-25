@@ -10,7 +10,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
    
    <div 
       *ngIf="isOpen" 
-      class="block md:hidden fixed inset-0 backdrop-blur-sm bg-white/40 z-50 flex items-center justify-center p-4 drop-shadow-lg"
+      class="block md:hidden fixed inset-0 backdrop-blur-md bg-white/30 z-50 flex items-center justify-center drop-shadow-lg"
       (click)="closeModal()"
     >
     <div class="flex flex-col items-center">
@@ -29,12 +29,12 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 </nav>
  
     <!-- ----mobile -->
-      <div>
+      <div class="pt-56 px-8">
         <div 
-          class="bg-gradient-to-r from-white/75 to-white/45 rounded-sm max-w-screen w-full min-h-screen overflow-y-auto"
+          class="bg-gradient-to-r from-white/75 to-white/90 rounded-t-xl min-w-screen min-h-screen overflow-y-auto px-6"
           (click)="$event.stopPropagation()"
         >
-          <div class="flex justify-center p-4 relative mb-4">
+          <div class="flex justify-center p-4 relative mb-8">
             <button 
               class="absolute items-center top-4 bg-black/70 hover:bg-black text-white px-6 py-2 rounded-md text-sm font-medium transition-colors drop-shadow-md"
               (click)="closeModal()"
@@ -42,10 +42,10 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
               TUTUP
             </button>
           </div>
-          <div class="px-8 py-4">
-            <div class="space-y-4">
+          <div class="">
+            <div class="space-y-2">
               <div class="rounded-xl overflow-hidden drop-shadow-md">
-              <div class="absolute top-1 left-1 w-8 h-8 flex items-center justify-center bg-white/70 rounded-full text-black font-bold drop-shadow-md z-10">
+              <div class="absolute top-2 left-2 w-8 h-8 flex items-center justify-center bg-white/70 rounded-full text-black font-bold drop-shadow-md z-10">
     {{product?.nomor}}
           </div>
                 <img 
@@ -56,18 +56,28 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
                 >
               </div>
               <h2 class="text-xl font-bold text-center">{{product?.namaBarang}}</h2>
-              <h2 class="text-sm text-wrap line-clamp-2">{{ product.deskripsi }}</h2>
-          <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
+              <div class="flex justify-start items-center mb-2">
+      <h2 class="text-lg font-bold"> {{product?.bintang+"/5 "}}</h2>
+          
     <span 
       class="text-yellow-400 text-xl"
-      [class.text-gray-300]="i + 1 > +product.bintang"
+      [class.text-gray-300]=""
     >
       ★
     </span>
-  </ng-container>
-              <div class="space-y-3 py-4">
+
+      </div>
+              <h2 class="text-sm text-wrap line-clamp-2">{{ product.deskripsi }}</h2>
+          
+              
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <div class="fixed bottom-0 left-0 z-30 w-full space-y-4 min-w-screen w-full bg-[#E5E7EB] px-8 py-6 rounded-t-2xl shadow-md">
                 <a [href]="product?.urlBeliTikTok" target="_blank" 
-                  class="block bg-black text-white py-3 px-4 rounded-xl text-center hover:opacity-90 transition-opacity drop-shadow-md">
+                  class="block bg-black text-white py-3 px-4 rounded-xl text-center hover:opacity-90 transition-opacity drop-shadow-2xl">
                   Beli di TikTok Shop
                 </a>
                 <a [href]="product?.urlBeliShopee" target="_blank" 
@@ -79,17 +89,12 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
                   Beli di Tokopedia
                 </a>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       </div>
     </div>
 
     <div 
   *ngIf="isOpen" 
-  class="hidden md:flex fixed inset-0 backdrop-blur-sm bg-white/60 z-50 items-center justify-center p-4 drop-shadow-lg"
+  class="hidden md:flex fixed inset-0 backdrop-blur-sm bg-white/40 z-50 items-center justify-center p-4 drop-shadow-lg"
   (click)="closeModal()"
 >
 <div class="flex flex-col items-center">
@@ -106,12 +111,22 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
     <div class="text-2xl font-regular font-sans">Store</div>
   </div>
 </nav>
-
+   <!-- Header: Judul dan Tombol Tutup -->
+   <div class="flex justify-end items-center mb-4">
+        
+        <button 
+          class="bg-black/70 hover:bg-black text-white px-6 py-2 rounded-2xl text-sm font-medium transition-colors drop-shadow-md"
+          (click)="closeModal()"
+        >
+          TUTUP
+        </button>
+      </div>
   <!-- Container utama untuk desktop -->
   <div 
     class="bg-gradient-to-r from-white/75 to-white/45 rounded-3xl max-w-5xl w-full flex flex-row gap-6 p-6 overflow-hidden"
     (click)="$event.stopPropagation()"
   >
+  
     <!-- Bagian kiri: Gambar produk -->
     <div class="flex-shrink-0 w-1/2 rounded-xl overflow-hidden drop-shadow-md">
     <div class="absolute top-1 left-1 w-8 h-8 flex items-center justify-center bg-white/70 rounded-full text-black font-bold drop-shadow-md z-10">
@@ -120,39 +135,25 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
       <img 
         [src]="product?.urlGambar" 
         [alt]="product?.namaBarang"
-        class="w-full h-full object-contain"
+        class="w-full h-full object-cover"
         onerror="this.src='https://placehold.co/400'"
       >
     </div>
 
     <!-- Bagian kanan: Informasi produk -->
     <div class="flex flex-col justify-between w-1/2">
-      <!-- Header: Judul dan Tombol Tutup -->
-      <div class="flex justify-end items-center mb-4">
-        
-        <button 
-          class="bg-black/70 hover:bg-black text-white px-6 py-2 rounded-md text-sm font-medium transition-colors drop-shadow-md"
-          (click)="closeModal()"
-        >
-          TUTUP
-        </button>
-      </div>
-
-      <div class="flex justify-between items-center mb-4">
+   
+      <div class="flex justify-between items-center mb-1">
         <h2 class="text-lg font-bold"> {{product?.namaBarang}}</h2>
         
       </div>
 
-      <div class="flex justify-start items-center mb-4">
-      <h2 class="text-lg font-bold"> {{product?.bintang+"/5"}}</h2>
-          <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
-    <span 
-      class="text-yellow-400 text-xl"
-      [class.text-gray-300]="i + 1 > +product?.bintang"
-    >
+      <div class="flex justify-start items-center mb-2">
+      <h2 class="text-lg font-bold mr-2"> {{product?.bintang+"/5 "}}</h2>
+      <span 
+      class="text-yellow-400 text-xl">
       ★
     </span>
-  </ng-container>
       </div>
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-sm text-wrap line-clamp-2">{{ product.deskripsi }}</h2>
@@ -189,8 +190,7 @@ export class ProductModalComponent implements OnChanges {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      // Kode ini hanya akan dijalankan di browser
-      document.title = 'Product Modal'; // Contoh penggunaan document
+      // Kode ini hanya akan dijalankan di browser // Contoh penggunaan document
     }
   }
 
