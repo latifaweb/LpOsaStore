@@ -48,13 +48,45 @@ interface Imagess {
   </nav>
 
   <!-- Slider -->
-  <div class="relative w-full h-[400px] bg-[url($Imagess[currentIndex]+)] flex justify-center items-center">
-    <button class="absolute left-4 bg-white p-2 rounded-full shadow">‹</button>
-    <div class="text-center">
-      <button class="py-2 hover:py-3 border bg-white/50 hover:bg-white font-regular hover:font-semibold drop-shadow-md hover: drop-shadow-md rounded-xl hover:rounded-2xl px-6 hover:px-7">SHOP NOW</button>
+  <!-- Slider -->
+<div class="relative w-full h-[400px] flex justify-center items-center overflow-hidden">
+  <div
+    class="absolute inset-0 bg-cover bg-center transition-all duration-500"
+    *ngIf="images.length; else loading"
+    [ngStyle]="{ 'background-image': 'url(' + images[currentIndex].urlGambar + ')' }"
+  ></div>
+
+  <ng-template #loading>
+    <div class="flex justify-center items-center w-full h-full">
+      <p>Loading images...</p>
     </div>
-    <button class="absolute right-4 bg-white p-2 rounded-full shadow">›</button>
+  </ng-template>
+
+  <button
+    (click)="prevImage()"
+    class="absolute left-4 bg-white p-2 rounded-full shadow hover:bg-gray-100"
+    *ngIf="images.length > 1"
+  >
+    ‹
+  </button>
+
+  <div class="text-center">
+    <button
+      class="py-2 hover:py-3 border bg-white/50 hover:bg-white font-regular hover:font-semibold drop-shadow-md hover:drop-shadow-md rounded-xl hover:rounded-2xl px-6 hover:px-7"
+    >
+      SHOP NOW
+    </button>
   </div>
+
+  <button
+    (click)="nextImage()"
+    class="absolute right-4 bg-white p-2 rounded-full shadow hover:bg-gray-100"
+    *ngIf="images.length > 1"
+  >
+    ›
+  </button>
+</div>
+
 
   <!-- Produk -->
   <section class="container py-8 px-6">
@@ -211,8 +243,9 @@ export class OsaStoreComponent implements OnInit {
         }
       });
 
-      const apiUrlImg = 'https://script.google.com/macros/s/AKfycbzyapuruFi_dTX0lgbszFw7a57wsm8UAEukMufSzIDJdkeWn9CkovCvcg9MAV5KyfKMhg/exec';
-      this.http.get<Imagess[]>(apiUrlImg)
+      const apiUrlImg =
+      'https://script.google.com/macros/s/AKfycbzyapuruFi_dTX0lgbszFw7a57wsm8UAEukMufSzIDJdkeWn9CkovCvcg9MAV5KyfKMhg/exec';
+    this.http.get<Imagess[]>(apiUrlImg)
       .pipe(
         timeout(5000),
         retry(this.maxRetries),
@@ -223,23 +256,35 @@ export class OsaStoreComponent implements OnInit {
           if (data && Array.isArray(data) && data.length > 0) {
             this.images = data;
           } else {
-            // Gunakan fallback jika API mengembalikan data kosong
-            this.products = this.getFallbackProducts();
+            this.images = [
+              { urlGambar: 'https://placehold.co/800x400?text=No+Image' },
+            ];
           }
-          this.isLoading = false;
           this.cdr.detectChanges();
-        }
+        },
+        error: (error) => {
+          console.error('Error fetching images:', error);
+          this.images = [
+            { urlGambar: 'https://placehold.co/800x400?text=No+Image' },
+          ];
+          this.cdr.detectChanges();
+        },
       });
   }
   
   nextImage(): void {
-    this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    if (this.images.length > 0) {
+      this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    }
   }
-
+  
   prevImage(): void {
-    this.currentIndex =
-      (this.currentIndex - 1 + this.images.length) % this.images.length;
+    if (this.images.length > 0) {
+      this.currentIndex =
+        (this.currentIndex - 1 + this.images.length) % this.images.length;
+    }
   }
+  
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Terjadi kesalahan saat memuat data.';
