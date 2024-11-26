@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 import { timeout } from 'rxjs/internal/operators/timeout';
@@ -11,7 +11,7 @@ import { ProductModalComponent } from "./productDetail.component";
 
 export const environment = {
   production: false,
-  apiUrl: 'https://script.google.com/macros/s/AKfycbyQK_6HEyFDPl-7MY5o-R2nXKJurH1s5M02ZApDjnBHzggLvqktVlryynMgAPUZnRRYEA/exec'
+  apiUrl: 'https://script.google.com/macros/s/AKfycbxpX5D2PrfR-4JKSmxeh_fiHpN3cGZmTAIjLlb9cmL0RlISgvcvOlgM4u306_MySGfnuA/exec'
 };
 
 interface Product {
@@ -92,8 +92,8 @@ interface Product {
           <img 
                   [src]="product.urlGambar" 
                   [alt]="product.namaBarang"
-                  class="w-full h-full object-cover rounded-lg"
-                  onerror="this.src='https://placehold.co/400'"
+                  class="w-full h-full object-cover rounded-lg cursor-pointer"
+                  onerror="this.src='https://placehold.co/400'" (click)="openProductDetail(product)"
                 >
         </div>
         <div class="p-2 mb-2 flex-grow cursor-pointer" (click)="openProductDetail(product)">
@@ -245,29 +245,27 @@ isModalOpen = false;
 updateKlik(product: Product): void {
   const payload = {
     nomor: product.nomor,
-    klik: parseInt(product.klik) + 1
+    klik: parseInt(product.klik) + 1,
   };
 
-  this.http.post(environment.apiUrl, payload).subscribe({
+  // Pastikan untuk menambahkan header 'Content-Type'
+  this.http.post(environment.apiUrl, payload, {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+    }),
+    observe: 'response', // Untuk memonitor response secara lebih detail
+  }).subscribe({
     next: (response: any) => {
       console.log('API Response:', response);
-
-      if (response && response.status === 'success') {
-        // Perbarui data produk jika respons berhasil
-        const updatedProduct = this.products.find(p => p.nomor === product.nomor);
-        if (updatedProduct) {
-          updatedProduct.klik = `${payload.klik}`;
-        }
-      } else {
-        // Tangani jika ada masalah pada respons server
-        console.warn('Respons tidak valid:', response);
-        alert('Respons dari server tidak valid. Silakan coba lagi.');
+      const updatedProduct = this.products.find((p) => p.nomor === product.nomor);
+      if (updatedProduct) {
+        updatedProduct.klik = `${payload.klik}`;
       }
     },
     error: (error) => {
       console.error('Error Response:', error);
-      alert('Gagal memperbarui klik. Silakan coba lagi.');
-    }
+      alert('Gagal memperbarui klik.');
+    },
   });
 }
 
