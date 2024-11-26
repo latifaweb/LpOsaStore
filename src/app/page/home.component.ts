@@ -11,7 +11,7 @@ import { ProductModalComponent } from "./productDetail.component";
 
 export const environment = {
   production: false,
-  apiUrl: 'https://script.googleusercontent.com/macros/echo?user_content_key=8sWrJET2Iz-aSGsvvFbWtCOi_c0ZVnHklJRiEgCHgOSRMz9rAycZQrE93DP7Z67DjSHDcgOel2ZfALz6TDfaW3SczOJmTp7Dm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnJb-ih73l35_C04R9Yw_oQSZWlwIBteOFHEEodtR3JcAhphrEcnr5QwfeP4h8fKKufI1nPITl8bhkAgkZioi12vNFcERqLMtGtz9Jw9Md8uu&lib=MJzk03rEj3y3DoBn3eMEYnPY--G-nk0gU'
+  apiUrl: 'https://script.google.com/macros/s/AKfycbyQK_6HEyFDPl-7MY5o-R2nXKJurH1s5M02ZApDjnBHzggLvqktVlryynMgAPUZnRRYEA/exec'
 };
 
 interface Product {
@@ -84,15 +84,17 @@ interface Product {
   @if (!isLoading) {
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-4">
     @for (product of products; track product.nomor) {
-      <div class=" rounded-lg p-2 flex flex-col">
+      <div class=" flex flex-col">
         <div class="relative w-full aspect-[2/2.5] rounded-sm mb-2">
           <div class="absolute top-1 left-1 w-8 h-8 flex items-center justify-center bg-white/70 rounded-full text-black font-bold drop-shadow-md z-10">
             {{ product.nomor }}
           </div>
-          <img [src]="product.urlGambar + 'q=50&fm=webp'" [alt]="product.namaBarang"
-            class="w-full h-full object-cover rounded-lg cursor-pointer" (click)="openProductDetail(product)"
-            loading="lazy"
-            onerror="this.src='https://placehold.co/400'">
+          <img 
+                  [src]="product.urlGambar" 
+                  [alt]="product.namaBarang"
+                  class="w-full h-full object-cover rounded-lg"
+                  onerror="this.src='https://placehold.co/400'"
+                >
         </div>
         <div class="p-2 mb-2 flex-grow cursor-pointer" (click)="openProductDetail(product)">
           <h2 class="text-sm font-semibold text-wrap line-clamp-2">{{ product.namaBarang }}</h2>
@@ -240,11 +242,44 @@ export class OsaStoreComponent implements OnInit {
   selectedProduct: Product | null = null;
 isModalOpen = false;
 
+updateKlik(product: Product): void {
+  const payload = {
+    nomor: product.nomor,
+    klik: parseInt(product.klik) + 1
+  };
+
+  this.http.post(environment.apiUrl, payload).subscribe({
+    next: (response: any) => {
+      console.log('API Response:', response);
+
+      if (response && response.status === 'success') {
+        // Perbarui data produk jika respons berhasil
+        const updatedProduct = this.products.find(p => p.nomor === product.nomor);
+        if (updatedProduct) {
+          updatedProduct.klik = `${payload.klik}`;
+        }
+      } else {
+        // Tangani jika ada masalah pada respons server
+        console.warn('Respons tidak valid:', response);
+        alert('Respons dari server tidak valid. Silakan coba lagi.');
+      }
+    },
+    error: (error) => {
+      console.error('Error Response:', error);
+      alert('Gagal memperbarui klik. Silakan coba lagi.');
+    }
+  });
+}
+
 // Tambahkan method ini di dalam class ProductListComponent:
 openProductDetail(product: Product): void {
   this.selectedProduct = product;
   this.isModalOpen = true;
+
+  // Update jumlah klik saat modal dibuka
+  this.updateKlik(product);
 }
+
 
 closeModal(): void {
   this.isModalOpen = false;
