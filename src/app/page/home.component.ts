@@ -26,6 +26,10 @@ interface Product {
   urlShopee: string 
 }
 
+interface Imagess {  
+  urlGambar: string;
+}
+
 @Component({
   selector: 'app-osa-store',
   standalone: true,
@@ -44,7 +48,7 @@ interface Product {
   </nav>
 
   <!-- Slider -->
-  <div class="relative w-full h-[400px] bg-[url('https://res.cloudinary.com/dqbpmesug/image/upload/v1732608768/osaStore/pfymwdnomskbylihzulx.png')] flex justify-center items-center">
+  <div class="relative w-full h-[400px] bg-[url($Imagess[currentIndex]+)] flex justify-center items-center">
     <button class="absolute left-4 bg-white p-2 rounded-full shadow">‹</button>
     <div class="text-center">
       <button class="py-2 hover:py-3 border bg-white/50 hover:bg-white font-regular hover:font-semibold drop-shadow-md hover: drop-shadow-md rounded-xl hover:rounded-2xl px-6 hover:px-7">SHOP NOW</button>
@@ -163,6 +167,9 @@ export class OsaStoreComponent implements OnInit {
   retryCount = 0;
   maxRetries = 3;
 
+  images: Imagess[] = [];
+  currentIndex = 0;
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
@@ -203,8 +210,36 @@ export class OsaStoreComponent implements OnInit {
           this.cdr.detectChanges();
         }
       });
+
+      const apiUrlImg = 'https://script.google.com/macros/s/AKfycbzyapuruFi_dTX0lgbszFw7a57wsm8UAEukMufSzIDJdkeWn9CkovCvcg9MAV5KyfKMhg/exec';
+      this.http.get<Imagess[]>(apiUrlImg)
+      .pipe(
+        timeout(5000),
+        retry(this.maxRetries),
+        catchError(this.handleError.bind(this))
+      )
+      .subscribe({
+        next: (data) => {
+          if (data && Array.isArray(data) && data.length > 0) {
+            this.images = data;
+          } else {
+            // Gunakan fallback jika API mengembalikan data kosong
+            this.products = this.getFallbackProducts();
+          }
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
   }
   
+  nextImage(): void {
+    this.currentIndex = (this.currentIndex + 1) % this.images.length;
+  }
+
+  prevImage(): void {
+    this.currentIndex =
+      (this.currentIndex - 1 + this.images.length) % this.images.length;
+  }
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Terjadi kesalahan saat memuat data.';
