@@ -55,7 +55,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
                   onerror="this.src='https://placehold.co/400'"
                 >
               </div>
-              <h2 class="text-xl font-bold text-center">{{product?.namaBarang}}</h2>
+              <h2 class="text-xl font-bold">{{product?.namaBarang}}</h2>
               <div class="flex justify-start items-center mb-2">
       <h2 class="text-lg font-bold"> {{product?.bintang+"/5 "}}</h2>
           

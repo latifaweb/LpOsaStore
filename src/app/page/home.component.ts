@@ -44,7 +44,7 @@ interface Product {
   </nav>
 
   <!-- Slider -->
-  <div class="relative w-full h-[400px] bg-gray-200 flex justify-center items-center">
+  <div class="relative w-full h-[400px] bg-[url('https://res.cloudinary.com/dqbpmesug/image/upload/v1732608768/osaStore/pfymwdnomskbylihzulx.png')] flex justify-center items-center">
     <button class="absolute left-4 bg-white p-2 rounded-full shadow">‹</button>
     <div class="text-center">
       <button class="py-2 hover:py-3 border bg-white/50 hover:bg-white font-regular hover:font-semibold drop-shadow-md hover: drop-shadow-md rounded-xl hover:rounded-2xl px-6 hover:px-7">SHOP NOW</button>
@@ -85,7 +85,7 @@ interface Product {
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-4">
     @for (product of products; track product.nomor) {
       <div class=" flex flex-col">
-        <div class="relative w-full aspect-[2/2.5] rounded-sm mb-2">
+        <div class="relative w-full aspect-[1/1] rounded-sm mb-2">
           <div class="absolute top-1 left-1 w-8 h-8 flex items-center justify-center bg-white/70 rounded-full text-black font-bold drop-shadow-md z-10">
             {{ product.nomor }}
           </div>
@@ -248,26 +248,40 @@ updateKlik(product: Product): void {
     klik: parseInt(product.klik) + 1,
   };
 
-  // Pastikan untuk menambahkan header 'Content-Type'
-  this.http.post(environment.apiUrl, payload, {
-    headers: new HttpHeaders({
+  // Menggunakan fetch dengan mode 'no-cors'
+  fetch(environment.apiUrl, {
+    method: 'POST',
+    mode: 'no-cors', // CORS mode
+    headers: {
       'Content-Type': 'application/json',
-    }),
-    observe: 'response', // Untuk memonitor response secara lebih detail
-  }).subscribe({
-    next: (response: any) => {
-      console.log('API Response:', response);
-      const updatedProduct = this.products.find((p) => p.nomor === product.nomor);
-      if (updatedProduct) {
-        updatedProduct.klik = `${payload.klik}`;
+    },
+    body: JSON.stringify(payload), // Kirim payload sebagai JSON
+  })
+    .then(response => {
+      // Cek apakah response memiliki tipe 'opaque' yang berarti tidak ada akses ke response body
+      if (response.type === 'opaque') {
+      // Panggil handleSuccess jika response sukses
+        return null;
       }
-    },
-    error: (error) => {
-      console.error('Error Response:', error);
-      alert('Gagal memperbarui klik.');
-    },
-  });
+      // Jika response tidak 'opaque', coba untuk membaca json
+      return response.json();
+    })
+    .then(data => {
+      if (data) {
+        console.log('Respon dari server:', data);
+        // Lakukan update produk di frontend
+        const updatedProduct = this.products.find((p) => p.nomor === product.nomor);
+        if (updatedProduct) {
+          updatedProduct.klik = `${payload.klik}`; // Simpan klik baru
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Gagal mengirim data:', error);
+      alert(`Gagal mengirim data: ${error.message}. Silakan coba lagi nanti.`); // Menampilkan error
+    });
 }
+
 
 // Tambahkan method ini di dalam class ProductListComponent:
 openProductDetail(product: Product): void {
