@@ -146,23 +146,25 @@ interface Imagess {
           <h2 class="text-sm text-wrap line-clamp-2">{{ product.deskripsi }}</h2>
          
         </div>
-        <div class="grid grid-cols-3 gap-2">
-        <a *ngIf="product.urlTiktok" [href]="product.urlTiktok" target="_blank" 
-   class="bg-black py-1 px-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-1">
-  <img src="https://res.cloudinary.com/dqbpmesug/image/upload/v1732251062/tiktok_gx9byn.png" alt="TikTok" class="h-4 md:h-7 aspect-[1/1]">
-</a>
+        <div [ngClass]="'grid gap-2 grid-cols-' + ((product.urlTiktok ? 1 : 0) + (product.urlShopee ? 1 : 0) + (product.urlTokped ? 1 : 0) || 1)">
+  
+  <a *ngIf="product.urlTiktok" [href]="product.urlTiktok" target="_blank" 
+     class="bg-black py-1 px-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-1">
+    <img src="https://res.cloudinary.com/dqbpmesug/image/upload/v1732251062/tiktok_gx9byn.png" alt="TikTok" class="h-4 md:h-7 aspect-[1/1]">
+  </a>
 
-<a *ngIf="product.urlShopee" [href]="product.urlShopee" target="_blank" 
-   class="bg-[#EE4D2D] py-1 px-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-1">
-  <img src="https://res.cloudinary.com/dqbpmesug/image/upload/v1732251062/shopee_vapivk.png" alt="Shopee" class="h-4 md:h-7 aspect-[1/1]">
-</a>
+  <a *ngIf="product.urlShopee" [href]="product.urlShopee" target="_blank" 
+     class="bg-[#EE4D2D] py-1 px-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-1">
+    <img src="https://res.cloudinary.com/dqbpmesug/image/upload/v1732251062/shopee_vapivk.png" alt="Shopee" class="h-4 md:h-7 aspect-[1/1]">
+  </a>
 
-<a *ngIf="product.urlTokped" [href]="product.urlTokped" target="_blank" 
-   class="bg-[#03AC0E] py-1 px-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-1">
-  <img src="https://res.cloudinary.com/dqbpmesug/image/upload/v1732251062/tokped_hu0who.png" alt="Tokopedia" class="h-4 md:h-7 aspect-[1/1]">
-</a>
+  <a *ngIf="product.urlTokped" [href]="product.urlTokped" target="_blank" 
+     class="bg-[#03AC0E] py-1 px-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-1">
+    <img src="https://res.cloudinary.com/dqbpmesug/image/upload/v1732251062/tokped_hu0who.png" alt="Tokopedia" class="h-4 md:h-7 aspect-[1/1]">
+  </a>
 
-        </div>
+</div>
+
       </div>
     }
     </div>
