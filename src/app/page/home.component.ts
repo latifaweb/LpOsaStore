@@ -48,20 +48,28 @@ interface Imagess {
   </nav>
 
   <!-- Slider -->
-  <!-- Slider -->
-<div class="relative w-full h-[400px] flex justify-center items-center overflow-hidden">
+  <div class="relative w-full h-[400px] flex justify-center items-center overflow-hidden">
+  <!-- Wrapper for images with sliding animation -->
   <div
-    class="absolute inset-0 bg-cover bg-center transition-all duration-500"
-    *ngIf="images.length; else loading"
-    [ngStyle]="{ 'background-image': 'url(' + images[currentIndex].urlGambar + ')' }"
-  ></div>
+    class="absolute w-full h-full flex transition-transform duration-500"
+    [ngStyle]="{ transform: 'translateX(' + slideOffset + '%)' }"
+  >
+    <!-- Display images in a loop -->
+    <div
+      *ngFor="let image of images; let i = index"
+      class="w-full h-full flex-shrink-0 bg-cover bg-center"
+      [ngStyle]="{ 'background-image': 'url(' + image.urlGambar + ')' }"
+    ></div>
+  </div>
 
+  <!-- Loading template -->
   <ng-template #loading>
     <div class="flex justify-center items-center w-full h-full">
       <p>Loading images...</p>
     </div>
   </ng-template>
 
+  <!-- Navigation buttons -->
   <button
     (click)="prevImage()"
     class="absolute left-4 bg-white p-2 rounded-full shadow hover:bg-gray-100"
@@ -69,7 +77,6 @@ interface Imagess {
   >
     ‹
   </button>
-
   <div class="text-center">
     <button
       class="py-2 hover:py-3 border bg-white/50 hover:bg-white font-regular hover:font-semibold drop-shadow-md hover:drop-shadow-md rounded-xl hover:rounded-2xl px-6 hover:px-7"
@@ -77,7 +84,6 @@ interface Imagess {
       SHOP NOW
     </button>
   </div>
-
   <button
     (click)="nextImage()"
     class="absolute right-4 bg-white p-2 rounded-full shadow hover:bg-gray-100"
@@ -86,6 +92,7 @@ interface Imagess {
     ›
   </button>
 </div>
+
 
 
   <!-- Produk -->
@@ -186,6 +193,37 @@ interface Imagess {
 
 </div>
 
+  `,
+  styles:`
+  /* Basic styles for carousel */
+.relative {
+  position: relative;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+.flex {
+  display: flex;
+}
+.w-full {
+  width: 100%;
+}
+.h-full {
+  height: 100%;
+}
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+.transition-transform {
+  transition: transform 0.5s ease-in-out;
+}
+.bg-cover {
+  background-size: cover;
+}
+.bg-center {
+  background-position: center;
+}
+
   `
 })
 export class OsaStoreComponent implements OnInit {
@@ -201,6 +239,7 @@ export class OsaStoreComponent implements OnInit {
 
   images: Imagess[] = [];
   currentIndex = 0;
+  slideOffset = 0;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -272,17 +311,22 @@ export class OsaStoreComponent implements OnInit {
       });
   }
   
-  nextImage(): void {
-    if (this.images.length > 0) {
-      this.currentIndex = (this.currentIndex + 1) % this.images.length;
-    }
+   nextImage() {
+    // Move to the next image
+    this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    this.updateSlideOffset();
   }
-  
-  prevImage(): void {
-    if (this.images.length > 0) {
-      this.currentIndex =
-        (this.currentIndex - 1 + this.images.length) % this.images.length;
-    }
+
+  prevImage() {
+    // Move to the previous image
+    this.currentIndex =
+      (this.currentIndex - 1 + this.images.length) % this.images.length;
+    this.updateSlideOffset();
+  }
+
+  updateSlideOffset() {
+    // Set the offset based on the current index
+    this.slideOffset = -this.currentIndex * 100;
   }
   
 
