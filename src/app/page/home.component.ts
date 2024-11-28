@@ -72,7 +72,7 @@ interface Imagess {
   <!-- Navigation buttons -->
   <button
     (click)="prevImage()"
-    class="absolute left-4 bg-white p-2 rounded-full shadow hover:bg-gray-100"
+    class="absolute border left-4 bg-white/75 px-2 font-bold text-lg rounded-full drop-shadow-md hover:bg-white"
     *ngIf="images.length > 1"
   >
     ‹
@@ -86,7 +86,7 @@ interface Imagess {
   </div>
   <button
     (click)="nextImage()"
-    class="absolute right-4 bg-white p-2 rounded-full shadow hover:bg-gray-100"
+    class="absolute border right-4 bg-white/75 px-2 font-bold text-lg rounded-full drop-shadow-md hover:bg-white"
     *ngIf="images.length > 1"
   >
     ›
@@ -98,11 +98,19 @@ interface Imagess {
   <!-- Produk -->
   <section class="container py-8 px-6">
     <h2 class="text-center font-semibold text-xl mb-4">SAYA SUKA TREND</h2>
-    <div class="grid grid-cols-3 gap-1 md:gap-2 lg:gap-6 justify-center mb-6 mx-0 md:mx-24 lg:mx-48 xl:mx-80">
-      <button class="px-2 py-2 bg-black text-white rounded-xl text-xs md:text-base text-nowrap">FEATURED</button>
-      <button class="px-2 py-2 border rounded-xl text-xs md:text-base text-nowrap">BEST SELLER</button>
-      <button class="px-0.5 md:px-2 py-2 border rounded-xl text-xs md:text-base text-nowrap">REKOMENDASI</button>
-    </div>
+    <div class="tabs flex justify-center my-4">
+        <button
+          *ngFor="let tab of tabs"
+          class="px-4 py-2 border rounded-lg mx-2"
+          [class.bg-black]="selectedTab === tab"
+          [class.text-white]="selectedTab === tab"
+          [class.bg-white]="selectedTab !== tab"
+          [class.text-black]="selectedTab !== tab"
+          (click)="selectTab(tab)"
+        >
+          {{ tab }}
+        </button>
+      </div>
 
     @if (isLoading) {
     <div class="flex justify-center items-center p-8">
@@ -150,6 +158,7 @@ interface Imagess {
       ★
     </span>
        </div>
+       <h2 class="text-sm text-wrap line-clamp-2">{{ product.klik }}</h2>
           <h2 class="text-sm text-wrap line-clamp-2">{{ product.deskripsi }}</h2>
          
         </div>
@@ -224,6 +233,10 @@ interface Imagess {
   background-position: center;
 }
 
+.tabs button {
+        transition: background-color 0.3s, color 0.3s;
+      }
+
   `
 })
 export class OsaStoreComponent implements OnInit {
@@ -241,6 +254,9 @@ export class OsaStoreComponent implements OnInit {
   currentIndex = 0;
   slideOffset = 0;
 
+  tabs: string[] = ['FEATURED', 'BEST SELLER', 'REKOMENDASI'];
+  selectedTab: string = this.tabs[0];
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
@@ -252,6 +268,16 @@ export class OsaStoreComponent implements OnInit {
       this.fetchProducts();
     }
   }
+
+  selectTab(tab: string): void {
+    if (tab === this.tabs[1]) {
+      this.products = [...this.products.sort((a, b) => parseInt(b.klik) - parseInt(a.klik))];
+    } else {
+      this.products = [...this.products.sort((a, b) => parseInt(a.nomor) - parseInt(b.nomor))];
+    }
+    this.selectedTab = tab;
+  }
+
   private fetchProducts(): void {
     this.isLoading = true;
     this.error = null;
