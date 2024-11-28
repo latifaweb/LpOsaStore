@@ -11,7 +11,7 @@ import { ProductModalComponent } from "./productDetail.component";
 
 export const environment = {
   production: false,
-  apiUrl: 'https://script.google.com/macros/s/AKfycbxpX5D2PrfR-4JKSmxeh_fiHpN3cGZmTAIjLlb9cmL0RlISgvcvOlgM4u306_MySGfnuA/exec'
+  apiUrl: 'https://script.google.com/macros/s/AKfycbz9etRGYcc7QYsLI_Jcu2DIV6sC7frOTl1KAWGsma2Xtx9Zi6cykhm3_mtmwMLqfbDRGg/exec'
 };
 
 interface Product {
@@ -19,7 +19,8 @@ interface Product {
   namaBarang: string;
   bintang: string,        
   deskripsi: string,      
-  klik: string,      
+  klik: string,
+  status: string,      
   urlGambar: string,
   urlTiktok: string,
   urlTokped: string,
@@ -269,13 +270,19 @@ export class OsaStoreComponent implements OnInit {
     }
   }
 
-  selectTab(tab: string): void {
+   selectTab(tab: string): void {
     if (tab === this.tabs[1]) {
       this.products = [...this.products.sort((a, b) => parseInt(b.klik) - parseInt(a.klik))];
+      this.cdr.detectChanges();
+    }else if (tab === this.tabs[2]) {
+      this.products = [...this.products.filter(a => a.status ==='rekomendasi')];
+      this.cdr.detectChanges();
     } else {
       this.products = [...this.products.sort((a, b) => parseInt(a.nomor) - parseInt(b.nomor))];
+      this.cdr.detectChanges();
     }
     this.selectedTab = tab;
+    
   }
 
   private fetchProducts(): void {
@@ -456,6 +463,7 @@ private getFallbackProducts(count: number = 8): Product[] {
     bintang: '5',
     deskripsi: 'Lorem Ipsum',
     klik: `${100 + i}`,
+    status:`normal`,
     urlGambar: 'https://placehold.co/400',
     urlTiktok: '',
     urlTokped: '',
