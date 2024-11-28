@@ -245,6 +245,7 @@ export class OsaStoreComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   
   products: Product[] = [];
+  originalProducts: Product[] = [];
   isListView = true;
   isLoading = true;
   error: string | null = null;
@@ -263,28 +264,32 @@ export class OsaStoreComponent implements OnInit {
   ngOnInit(): void {
     // Inisialisasi dengan data fallback terlebih dahulu
     this.products = this.getFallbackProducts();
-    
+    this.originalProducts = [...this.products];
     // Hanya fetch data jika di browser
     if (isPlatformBrowser(this.platformId)) {
       this.fetchProducts();
     }
   }
 
-   selectTab(tab: string): void {
-    if (tab === this.tabs[1]) {
-      this.products = [...this.products.sort((a, b) => parseInt(b.klik) - parseInt(a.klik))];
-      this.cdr.detectChanges();
-    }else if (tab === this.tabs[2]) {
-      this.products = [...this.products.filter(a => a.status ==='rekomendasi')];
-      this.cdr.detectChanges();
-    } else {
-      this.products = [...this.products.sort((a, b) => parseInt(a.nomor) - parseInt(b.nomor))];
-      this.cdr.detectChanges();
-    }
+  selectTab(tab: string): void {
     this.selectedTab = tab;
     
+    // Kembalikan ke daftar produk asli
+    this.products = [...this.originalProducts];
+    
+    if (tab === this.tabs[1]) {
+      // Sort berdasarkan klik untuk "BEST SELLER"
+      this.products.sort((a, b) => parseInt(b.klik) - parseInt(a.klik));
+    } else if (tab === this.tabs[2]) {
+      // Filter untuk "REKOMENDASI"
+      this.products = this.products.filter(product => product.status === 'rekomendasi');
+    } else {
+      // Sort default berdasarkan nomor untuk tab FEATURED
+      this.products.sort((a, b) => parseInt(a.nomor) - parseInt(b.nomor));
+    }
+    
+    this.cdr.detectChanges();
   }
-
   private fetchProducts(): void {
     this.isLoading = true;
     this.error = null;
@@ -299,6 +304,7 @@ export class OsaStoreComponent implements OnInit {
         next: (data) => {
           if (data && Array.isArray(data) && data.length > 0) {
             this.products = data;
+            this.originalProducts = [...data];
           } else {
             // Gunakan fallback jika API mengembalikan data kosong
             this.products = this.getFallbackProducts();

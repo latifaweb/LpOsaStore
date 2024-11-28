@@ -67,7 +67,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
     </span>
 
       </div>
-              <h2 class="text-sm text-wrap line-clamp-2">{{ product.deskripsi }}</h2>
+              <h2 class="text-sm break-words whitespace-normal line-clamp-8">{{ product?.deskripsi }}</h2>
           
               
             </div>
@@ -76,18 +76,18 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
         
       </div>
       <div class="fixed bottom-0 left-0 z-30 w-full space-y-4 min-w-screen w-full bg-[#E5E7EB] px-8 py-6 rounded-t-2xl shadow-md">
-                <a [href]="product?.urlBeliTikTok" target="_blank" 
-                  class="block bg-black text-white py-3 px-4 rounded-xl text-center hover:opacity-90 transition-opacity drop-shadow-2xl">
-                  Beli di TikTok Shop
-                </a>
-                <a [href]="product?.urlBeliShopee" target="_blank" 
-                  class="block bg-[#EE4D2D] text-white py-3 px-4 rounded-xl text-center hover:opacity-90 transition-opacity drop-shadow-md">
-                  Beli di Shopee
-                </a>
-                <a [href]="product?.urlBeliTokopedia" target="_blank" 
-                  class="block bg-[#03AC0E] text-white py-3 px-4 rounded-xl text-center hover:opacity-90 transition-opacity drop-shadow-md">
-                  Beli di Tokopedia
-                </a>
+      <a *ngIf="product?.urlTiktok" [href]="product?.urlBeliTikTok" target="_blank" 
+          class="block bg-black text-white py-3 px-4 rounded-xl text-center hover:opacity-90 transition-opacity drop-shadow-md">
+          Beli di TikTok Shop
+        </a>
+        <a *ngIf="product?.urlShopee" [href]="product?.urlBeliShopee" target="_blank" 
+          class="block bg-[#EE4D2D] text-white py-3 px-4 rounded-xl text-center hover:opacity-90 transition-opacity drop-shadow-md">
+          Beli di Shopee
+        </a>
+        <a *ngIf="product?.urlBeliTokopedia" [href]="product?.urlBeliTokopedia" target="_blank" 
+          class="block bg-[#03AC0E] text-white py-3 px-4 rounded-xl text-center hover:opacity-90 transition-opacity drop-shadow-md">
+          Beli di Tokopedia
+        </a>
               </div>
       </div>
     </div>
@@ -142,7 +142,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 
     <!-- Bagian kanan: Informasi produk -->
     <div class="flex flex-col justify-between w-1/2">
-   
+    <div class="flex flex-col justify-start">
       <div class="flex justify-between items-center mb-1">
         <h2 class="text-lg font-bold"> {{product?.namaBarang}}</h2>
         
@@ -156,21 +156,21 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
     </span>
       </div>
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-sm text-wrap line-clamp-2">{{ product.deskripsi }}</h2>
+        <h2 class="text-sm break-words whitespace-normal line-clamp-5">{{ product?.deskripsi }}</h2>
 
       </div>
-
+      </div>
       <!-- Link Marketplace -->
       <div class="space-y-3">
-        <a [href]="product?.urlBeliTikTok" target="_blank" 
+        <a *ngIf="product?.urlTiktok" [href]="product?.urlBeliTikTok" target="_blank" 
           class="block bg-black text-white py-3 px-4 rounded-xl text-center hover:opacity-90 transition-opacity drop-shadow-md">
           Beli di TikTok Shop
         </a>
-        <a [href]="product?.urlBeliShopee" target="_blank" 
+        <a *ngIf="product?.urlShopee" [href]="product?.urlBeliShopee" target="_blank" 
           class="block bg-[#EE4D2D] text-white py-3 px-4 rounded-xl text-center hover:opacity-90 transition-opacity drop-shadow-md">
           Beli di Shopee
         </a>
-        <a [href]="product?.urlBeliTokopedia" target="_blank" 
+        <a *ngIf="product?.urlBeliTokopedia" [href]="product?.urlBeliTokopedia" target="_blank" 
           class="block bg-[#03AC0E] text-white py-3 px-4 rounded-xl text-center hover:opacity-90 transition-opacity drop-shadow-md">
           Beli di Tokopedia
         </a>
