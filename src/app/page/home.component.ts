@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpClientModule, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -159,7 +159,7 @@ interface Imagess {
       ★
     </span>
        </div>
-       <h2 class="text-sm text-wrap line-clamp-2">{{ product.klik }}</h2>
+       <!-- <h2 class="text-sm text-wrap line-clamp-2">{{ product.klik }}</h2> -->
           <h2 class="text-sm text-wrap line-clamp-2">{{ product.deskripsi }}</h2>
          
         </div>
@@ -202,6 +202,16 @@ interface Imagess {
 />
 
 </div>
+
+<button 
+    *ngIf="showScrollButton && !isModalOpen"
+    (click)="scrollToTop()"
+    class="fixed bottom-4 right-4 bg-black text-white p-3 rounded-full shadow-lg hover:bg-gray-800 transition-all z-50 flex items-center justify-center"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    </svg>
+  </button>
 
   `,
   styles:`
@@ -461,6 +471,23 @@ closeModal(): void {
   this.selectedProduct = null;
 }
 
+showScrollButton = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    // Show scroll button when user has scrolled down 300 pixels
+    this.showScrollButton = window.scrollY > 300;
+  }
+
+  scrollToTop() {
+    // Only scroll if modal is not open
+    if (!this.isModalOpen) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  }
 
 private getFallbackProducts(count: number = 8): Product[] {
   return Array.from({ length: count }, (_, i) => ({
